@@ -1,1 +1,4 @@
 /.idea/
+/www/html/vendor
+/data/mysql/*
+!/data/mysql/.gitkeep
