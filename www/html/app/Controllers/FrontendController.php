@@ -19,6 +19,11 @@ class FrontendController
         echo $this->view->render('login');
     }
 
+    public function showNewAccPage($params = null)
+    {
+        echo $this->view->render('newAcc');
+    }
+
     public function showDashboardPage($params = null)
     {
         $teste = [
