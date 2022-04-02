@@ -11,8 +11,13 @@ use Pecee\SimpleRouter\SimpleRouter;
 SimpleRouter::setDefaultNamespace('\WJCrypto\Controllers');
 
 SimpleRouter::get('/', 'FrontendController@showLoginPage');
-SimpleRouter::get('/dashboard', 'FrontendController@showDashboardPage');
+
 SimpleRouter::post('/dashboard', 'FrontendController@showDashboardPage');
+SimpleRouter::get('/dashboard', 'FrontendController@showDashboardPage');
+
+SimpleRouter::get('/withdraw', 'FrontendController@showWithdrawPage');
+SimpleRouter::get('/deposit', 'FrontendController@showDepositPage');
+SimpleRouter::get('/transfer', 'FrontendController@showTransferPage');
 
 //Router::group(['exceptionHandler' => \Demo\Handlers\CustomExceptionHandler::class], function () {
 //

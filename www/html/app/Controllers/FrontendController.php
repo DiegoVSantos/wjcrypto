@@ -21,6 +21,33 @@ class FrontendController
 
     public function showDashboardPage($params = null)
     {
-        echo $this->view->render('sampleContent');
+        $teste = [
+            'username' => 'Diego Vicente'
+        ];
+
+        echo $this->view->render('dashboard', $teste);
+    }
+
+    public function showWithdrawPage($params = null)
+    {
+        $teste = [
+            'username' => 'Diego Vicente'
+        ];
+
+        echo $this->view->render('withdraw', $teste);
+    }
+
+    public function showDepositPage($params = null)
+    {
+        $teste = [
+            'username' => 'Diego Vicente'
+        ];
+
+        echo $this->view->render('deposit', $teste);
+    }
+
+    public function showTransferPage($params = null)
+    {
+        echo $this->view->render('transfer');
     }
 }

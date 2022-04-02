@@ -1,7 +1,11 @@
 @extends('templates/master')
 
 @section('page-title')
-    Starter Page
+    - Dashboard
+@endsection
+
+@section('content-title')
+    Tela Inicial
 @endsection
 
 @section('content')
