@@ -18,4 +18,9 @@ class FrontendController
     {
         echo $this->view->render('login');
     }
+
+    public function showDashboardPage($params = null)
+    {
+        echo $this->view->render('sampleContent');
+    }
 }

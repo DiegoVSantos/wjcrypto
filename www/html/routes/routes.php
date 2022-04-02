@@ -11,6 +11,8 @@ use Pecee\SimpleRouter\SimpleRouter;
 SimpleRouter::setDefaultNamespace('\WJCrypto\Controllers');
 
 SimpleRouter::get('/', 'FrontendController@showLoginPage');
+SimpleRouter::get('/dashboard', 'FrontendController@showDashboardPage');
+SimpleRouter::post('/dashboard', 'FrontendController@showDashboardPage');
 
 //Router::group(['exceptionHandler' => \Demo\Handlers\CustomExceptionHandler::class], function () {
 //
