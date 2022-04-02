@@ -1,0 +1,25 @@
+{
+ 	"name": "webjump/wjcrypto",
+ 	"description": "WJCrypto Academia WebJump",
+	"type": "project",
+	"require": {
+		"php": ">=7.4",
+		"pecee/simple-router": "^4.0",
+		"jenssegers/blade": "^v1.4.0",
+		"php-di/php-di": "^6.3",
+		"monolog/monolog": "^2.4",
+		"almasaeed2010/adminlte": "~3.1"
+
+	},
+    "autoload": {
+      "psr-4": {
+        "WJCrypto\\": "app/"
+      }
+    },
+	"authors": [
+		{
+			"name": "Diego V. dos Santos",
+			"email": "diego.santos@webjump.com.br"
+		}
+	]
+}
