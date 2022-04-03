@@ -14,17 +14,17 @@ class FrontendController
        $this->view = Helpers::getContainer('Blade');
     }
 
-    public function showLoginPage($params = null)
+    public function showLoginPage($params = [])
     {
-        echo $this->view->render('login');
+        echo $this->view->render('login', $params);
     }
 
-    public function showNewAccPage($params = null)
+    public function showNewAccPage($params = [])
     {
-        echo $this->view->render('newAcc');
+        echo $this->view->render('newAcc', $params);
     }
 
-    public function showDashboardPage($params = null)
+    public function showDashboardPage($params = [])
     {
         $teste = [
             'username' => 'Diego Vicente'
@@ -33,7 +33,7 @@ class FrontendController
         echo $this->view->render('dashboard', $teste);
     }
 
-    public function showWithdrawPage($params = null)
+    public function showWithdrawPage($params = [])
     {
         $teste = [
             'username' => 'Diego Vicente'
@@ -42,7 +42,7 @@ class FrontendController
         echo $this->view->render('withdraw', $teste);
     }
 
-    public function showDepositPage($params = null)
+    public function showDepositPage($params = [])
     {
         $teste = [
             'username' => 'Diego Vicente'
@@ -51,7 +51,7 @@ class FrontendController
         echo $this->view->render('deposit', $teste);
     }
 
-    public function showTransferPage($params = null)
+    public function showTransferPage($params = [])
     {
         echo $this->view->render('transfer');
     }

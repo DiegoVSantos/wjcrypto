@@ -4,6 +4,9 @@ namespace WJCrypto\DI;
 
 use DI\ContainerBuilder;
 use Jenssegers\Blade\Blade;
+use WJCrypto\Controllers\FrontendController;
+use WJCrypto\Controllers\UserController;
+use WJCrypto\Models\DbModel;
 use function DI\factory;
 
 class Builder
@@ -18,8 +21,20 @@ class Builder
         self::$builder = new ContainerBuilder();
 
         self::$builder->addDefinitions([
+            'Database' => factory(function () {
+                return new DbModel();
+            }),
+
             'Blade' => factory(function () {
                 return new Blade(__DIR__ . '/../Views', __DIR__ . '/../Views/cache');
+            }),
+
+            'UserController' => factory(function () {
+                return new UserController();
+            }),
+
+            'FrontendController' => factory(function () {
+                return new FrontendController();
             })
         ]);
 
