@@ -11,6 +11,7 @@ use Pecee\SimpleRouter\SimpleRouter;
 SimpleRouter::setDefaultNamespace('\WJCrypto\Controllers');
 
 SimpleRouter::get('/', 'FrontendController@showLoginPage');
+SimpleRouter::post('/', 'UserController@login');
 
 SimpleRouter::get('/register', 'FrontendController@showNewAccPage');
 SimpleRouter::post('/register', 'AccountController@create');

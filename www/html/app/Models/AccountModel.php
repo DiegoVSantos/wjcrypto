@@ -26,4 +26,9 @@ class AccountModel
 
         return false;
     }
+
+    protected function getAccount($user_id)
+    {
+        return $this->conn->select('accounts', ["user_id = $user_id"])->fetchObject();
+    }
 }

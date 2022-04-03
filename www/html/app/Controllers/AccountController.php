@@ -48,4 +48,9 @@ class AccountController extends AccountModel
             ['message' => 'Conta Criada com sucesso']
         );
     }
+
+    public function getAccountData($user_id)
+    {
+        return parent::getAccount($user_id);
+    }
 }

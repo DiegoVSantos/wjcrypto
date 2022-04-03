@@ -12,10 +12,16 @@ class UserController extends UserModel
      */
     private $view;
 
+    /**
+     * @var AccountController
+     */
+    private $account;
+
     public function __construct()
     {
         parent::__construct();
         $this->view = Helpers::getContainer('FrontendController');
+//        $this->account = Helpers::getContainer('AccountController');
     }
 
     public function create()
@@ -51,9 +57,33 @@ class UserController extends UserModel
             'senha' => filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING),
         ];
 
-        if (!parent::userExists($data['cpf_cnpj'])) {
-            echo $this->view->showLoginPage()
+        try {
+            if (!parent::userExists($data['cpf_cnpj'])) {
+                throw new \Exception('Usuário não cadastrado');
+            }
+
+            $user = parent::getUserData($data['cpf_cnpj']);
+
+            if (!password_verify($data['senha'], $user->senha)) {
+                throw new \Exception('Senha incorreta');
+            }
+
+//            $user->account = $this->account->getAccountData($user->id);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $this->view->showLoginPage([
+                'message' => $message
+            ]);
         }
-        password_verify($pass, )
+
+        if (!isset($message)) {
+            $_SESSION['username'] = $user->nome_razao;
+//            $_SESSION['account'] = $user->account->account;
+
+            $this->view->showDashboardPage([
+                'username' => $_SESSION['username'],
+//                'account' => $_SESSION['account']
+            ]);
+        }
     }
 }

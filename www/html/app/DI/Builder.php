@@ -4,6 +4,7 @@ namespace WJCrypto\DI;
 
 use DI\ContainerBuilder;
 use Jenssegers\Blade\Blade;
+use WJCrypto\Controllers\AccountController;
 use WJCrypto\Controllers\FrontendController;
 use WJCrypto\Controllers\UserController;
 use WJCrypto\Models\DbModel;
@@ -31,6 +32,10 @@ class Builder
 
             'UserController' => factory(function () {
                 return new UserController();
+            }),
+
+            'AccountController' => factory(function () {
+                return new AccountController();
             }),
 
             'FrontendController' => factory(function () {

@@ -42,6 +42,11 @@ class UserModel
         return (bool) $this->conn->select('users', ["cpf_cnpj = '$cpfCnpj'"])->rowCount();
     }
 
+    protected function getUserData($cpfCnpj)
+    {
+        return $this->conn->select('users', ["cpf_cnpj = '$cpfCnpj'"])->fetchObject();
+    }
+
     protected function lastCreatedUser()
     {
         return $this->conn->connection()->lastInsertId();

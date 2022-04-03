@@ -24,9 +24,13 @@
         <div class="card-body">
             <p class="login-box-msg">Faça login para acessar sua conta</p>
 
-            <form action="dashboard" method="post">
+            @if (isset($message))
+                <p class="login-box-msg">{{ $message }}</p>
+            @endif
+
+            <form action="/" method="post">
                 <div class="input-group mb-3">
-                    <input type="email" class="form-control" placeholder="Email">
+                    <input type="text" name="cpf_cnpj" class="form-control" placeholder="CPF / CNPJ">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-envelope"></span>
@@ -34,7 +38,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input type="password" name="senha" class="form-control" placeholder="Senha">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>

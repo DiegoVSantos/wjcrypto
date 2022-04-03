@@ -17,8 +17,7 @@
                     <div class="small-box bg-info">
                         <div class="inner">
                             <h4>Dados da Conta</h4>
-                            <p>Conta: 1234</p>
-                            <p>Agencia: 1234-5</p>
+                            <p>Conta: {{ $account }}</p>
                         </div>
                         <div class="icon">
                             <i class="far fa-user"></i>
