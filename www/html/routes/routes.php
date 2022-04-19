@@ -7,21 +7,27 @@ declare(strict_types=1);
 
 use Pecee\SimpleRouter\SimpleRouter;
 
-
 SimpleRouter::setDefaultNamespace('\WJCrypto\Controllers');
 
 SimpleRouter::get('/', 'FrontendController@showLoginPage');
 SimpleRouter::post('/', 'UserController@login');
+SimpleRouter::get('/logout', 'UserController@logout');
 
 SimpleRouter::get('/register', 'FrontendController@showNewAccPage');
-SimpleRouter::post('/register', 'AccountController@create');
+SimpleRouter::post('/register', 'UserController@create');
 
-SimpleRouter::post('/dashboard', 'FrontendController@showDashboardPage');
-SimpleRouter::get('/dashboard', 'FrontendController@showDashboardPage');
+SimpleRouter::group(['middleware' => WJCrypto\Middlewares\AuthMiddleware::class], function () {
+    SimpleRouter::get('/dashboard', 'UserController@getDashboardData');
 
-SimpleRouter::get('/withdraw', 'FrontendController@showWithdrawPage');
-SimpleRouter::get('/deposit', 'FrontendController@showDepositPage');
-SimpleRouter::get('/transfer', 'FrontendController@showTransferPage');
+    SimpleRouter::get('/deposit', 'FrontendController@showDepositPage');
+    SimpleRouter::post('/depositPost', 'AccountController@depositController');
+
+    SimpleRouter::get('/withdraw', 'FrontendController@showWithdrawPage');
+    SimpleRouter::post('/withdrawPost', 'AccountController@withdrawController');
+
+    SimpleRouter::get('/transfer', 'FrontendController@showTransferPage');
+    SimpleRouter::post('/transferPost', 'AccountController@transferController');
+});
 
 //Router::group(['exceptionHandler' => \Demo\Handlers\CustomExceptionHandler::class], function () {
 //

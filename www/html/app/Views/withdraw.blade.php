@@ -15,14 +15,19 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card card-primary card-outline">
-                        <form action="withdraw" method="post">
+                        <form action="withdrawPost" method="post">
                             <div class="card-header">
                                 <h5 class="m-0">Saque</h5>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="valor">Valor a sacar:</label>
-                                    <input class="form-control" type="number" name="valor" id="valor">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input class="form-control" type="number" name="valor" id="valor">
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">

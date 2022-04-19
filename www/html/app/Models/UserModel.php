@@ -19,22 +19,20 @@ class UserModel
     protected function createUser($data)
     {
         if ($this->userExists($data['cpf_cnpj'])) {
-            return false;
+            throw new \Exception("Usuário já existente com o CPF / CNPJ informado");
         }
 
         if ($data['senha'] != $data['senha2']) {
-            return false;
+            throw new \Exception("As senhas informadas não conferem");
         }
 
         unset($data['senha2']);
         $data['senha'] = password_hash($data['senha'], PASSWORD_ARGON2I);
 
         $insert = $this->conn->insert('users', $data);
-        if ($insert->rowCount()) {
-            return true;
+        if (!$insert->rowCount()) {
+            throw new \Exception("Erro ao inserir usuário na base de dados");
         }
-
-        return false;
     }
 
     protected function userExists($cpfCnpj)

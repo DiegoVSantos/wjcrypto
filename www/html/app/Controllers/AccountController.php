@@ -8,11 +8,6 @@ use WJCrypto\Models\AccountModel;
 class AccountController extends AccountModel
 {
     /**
-     * @var UserController
-     */
-    private $user;
-
-    /**
      * @var FrontendController
      */
     private $view;
@@ -20,20 +15,11 @@ class AccountController extends AccountModel
     public function __construct()
     {
         parent::__construct();
-        $this->user = Helpers::getContainer('UserController');
         $this->view = Helpers::getContainer('FrontendController');
     }
 
-    public function create()
+    public function create($user_id)
     {
-        $param = [];
-
-        if (!$this->user->create()) {
-            echo $this->view->showNewAccPage(['message' => 'Erro ao criar o usuário']);
-        }
-
-        $user_id = $this->user->getLastUserCreated();
-
         $data = [
             'user_id' => $user_id,
             'account' => sprintf('%05d', $user_id).'-1',
@@ -52,5 +38,35 @@ class AccountController extends AccountModel
     public function getAccountData($user_id)
     {
         return parent::getAccount($user_id);
+    }
+
+    public function transactionHistory($account)
+    {
+        return parent::getTransactionHistory($account);
+    }
+
+    public function depositController()
+    {
+        $qty = filter_input(INPUT_POST, 'valor', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        parent::deposit($_SESSION['account'], $qty);
+
+        Helpers::response()->redirect('/dashboard');
+    }
+
+    public function withdrawController()
+    {
+        $qty = filter_input(INPUT_POST, 'valor', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        parent::withdraw($_SESSION['account'], $qty);
+
+        Helpers::response()->redirect('/dashboard');
+    }
+
+    public function transferController()
+    {
+        $targetAccount = filter_input(INPUT_POST, 'conta', FILTER_SANITIZE_STRING);
+        $qty = filter_input(INPUT_POST, 'valor', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        parent::transfer($targetAccount, $qty);
+        Helpers::response()->redirect('/dashboard');
     }
 }

@@ -2,6 +2,9 @@
 
 namespace WJCrypto;
 
+use Pecee\Http\Request;
+use Pecee\Http\Response;
+use Pecee\SimpleRouter\SimpleRouter as Router;
 use WJCrypto\DI\Builder;
 
 class Helpers
@@ -30,7 +33,7 @@ class Helpers
     }
 
     /**
-     * @return \Pecee\Http\Response
+     * @return Response
      */
     public static function response(): Response
     {
@@ -38,7 +41,7 @@ class Helpers
     }
 
     /**
-     * @return \Pecee\Http\Request
+     * @return Request
      */
     public static function request(): Request
     {
@@ -87,6 +90,16 @@ class Helpers
 
         return null;
     }
+
+    public static function hasSession()
+    {
+        if(isset($_SESSION['account'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public static function getContainer($instance)
     {

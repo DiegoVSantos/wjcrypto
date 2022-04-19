@@ -66,7 +66,7 @@ class DbModel
         return $statement;
     }
 
-    public function select(string $tabela, array $where = [])
+    public function select(string $tabela, array $where = [], $orderBy = null)
     {
         $pdo = self::connection();
         $sql = "SELECT * FROM $tabela";
@@ -74,6 +74,11 @@ class DbModel
             $sql .= " WHERE ";
             $sql .= implode(" AND ", $where);
         }
+
+        if ($orderBy) {
+            $sql .= "ORDER BY $orderBy";
+        }
+
         $statement = $pdo->prepare($sql);
         $statement->execute();
 

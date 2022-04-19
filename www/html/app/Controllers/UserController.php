@@ -21,7 +21,7 @@ class UserController extends UserModel
     {
         parent::__construct();
         $this->view = Helpers::getContainer('FrontendController');
-//        $this->account = Helpers::getContainer('AccountController');
+        $this->account = Helpers::getContainer('AccountController');
     }
 
     public function create()
@@ -42,12 +42,18 @@ class UserController extends UserModel
             'senha' => filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING),
             'senha2' => filter_input(INPUT_POST, 'senha2', FILTER_SANITIZE_STRING),
         ];
-        return parent::createUser($data);
-    }
+        try {
+            parent::createUser($data);
 
-    public function getLastUserCreated()
-    {
-        return parent::lastCreatedUser();
+            $user_id = parent::lastCreatedUser();
+
+            $this->account->create($user_id);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $this->view->showNewAccPage([
+                'message' => $message
+            ]);
+        }
     }
 
     public function login()
@@ -68,7 +74,7 @@ class UserController extends UserModel
                 throw new \Exception('Senha incorreta');
             }
 
-//            $user->account = $this->account->getAccountData($user->id);
+            $user->account = $this->account->getAccountData($user->id);
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $this->view->showLoginPage([
@@ -77,13 +83,29 @@ class UserController extends UserModel
         }
 
         if (!isset($message)) {
+            $_SESSION['user_id'] = $user->id;
             $_SESSION['username'] = $user->nome_razao;
-//            $_SESSION['account'] = $user->account->account;
+            $_SESSION['account'] = $user->account->account;
 
-            $this->view->showDashboardPage([
-                'username' => $_SESSION['username'],
-//                'account' => $_SESSION['account']
-            ]);
+            Helpers::response()->redirect('/dashboard');
         }
+    }
+
+    public function getDashboardData()
+    {
+        $account = $this->account->getAccountData($_SESSION['user_id']);
+        $transactions = $this->account->transactionHistory($_SESSION['account']);
+
+        $this->view->showDashboardPage([
+            'account' => $account->account,
+            'balance' => $account->saldo,
+            'transactions' => $transactions
+        ]);
+    }
+
+    public function logout()
+    {
+        session_destroy();
+        Helpers::response()->redirect('/');
     }
 }
