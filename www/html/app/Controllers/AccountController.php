@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WJCrypto\Controllers;
 
 use WJCrypto\Helpers;
@@ -7,15 +9,10 @@ use WJCrypto\Models\AccountModel;
 
 class AccountController extends AccountModel
 {
-    /**
-     * @var FrontendController
-     */
-    private $view;
 
     public function __construct()
     {
         parent::__construct();
-        $this->view = Helpers::getContainer('FrontendController');
     }
 
     public function create($user_id)
@@ -27,12 +24,8 @@ class AccountController extends AccountModel
         ];
 
         if (!parent::createAccount($data)) {
-            echo $this->view->showNewAccPage(['message' => 'Erro ao criar sua conta']);
+            throw new \Exception(parent::ACCOUNT_CREATION_FAILED);
         }
-
-        echo $this->view->showNewAccPage(
-            ['message' => 'Conta Criada com sucesso']
-        );
     }
 
     public function getAccountData($user_id)

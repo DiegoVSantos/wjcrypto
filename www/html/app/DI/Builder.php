@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WJCrypto\DI;
 
 use DI\ContainerBuilder;
@@ -7,7 +9,9 @@ use Jenssegers\Blade\Blade;
 use WJCrypto\Controllers\AccountController;
 use WJCrypto\Controllers\FrontendController;
 use WJCrypto\Controllers\UserController;
+use WJCrypto\Models\AccountModel;
 use WJCrypto\Models\DbModel;
+use WJCrypto\Models\UserModel;
 use function DI\factory;
 
 class Builder
@@ -34,8 +38,16 @@ class Builder
                 return new UserController();
             }),
 
+            'UserModel' => factory(function () {
+                return new UserModel();
+            }),
+
             'AccountController' => factory(function () {
                 return new AccountController();
+            }),
+
+            'AccountModel' => factory(function () {
+                return new AccountModel();
             }),
 
             'FrontendController' => factory(function () {

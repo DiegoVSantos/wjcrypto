@@ -28,7 +28,7 @@
                 <p class="login-box-msg">{{ $message }}</p>
             @endif
 
-            <form action="/" method="post">
+            <form action="/loginPost" method="post">
                 <div class="input-group mb-3">
                     <input type="text" name="cpf_cnpj" class="form-control" placeholder="CPF / CNPJ">
                     <div class="input-group-append">

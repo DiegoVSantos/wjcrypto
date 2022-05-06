@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WJCrypto\Controllers;
 
 use WJCrypto\Helpers;
 use WJCrypto\Models\UserModel;
 
-class UserController extends UserModel
+class UserController
 {
     /**
      * @var FrontendController $view
@@ -17,11 +19,16 @@ class UserController extends UserModel
      */
     private $account;
 
+    /**
+     * @var UserModel
+     */
+    private $user;
+
     public function __construct()
     {
-        parent::__construct();
         $this->view = Helpers::getContainer('FrontendController');
         $this->account = Helpers::getContainer('AccountController');
+        $this->user = Helpers::getContainer('UserModel');
     }
 
     public function create()
@@ -42,18 +49,18 @@ class UserController extends UserModel
             'senha' => filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING),
             'senha2' => filter_input(INPUT_POST, 'senha2', FILTER_SANITIZE_STRING),
         ];
-        try {
-            parent::createUser($data);
 
-            $user_id = parent::lastCreatedUser();
+        $result = Helpers::getApiConnection('/register', $data);
 
-            $this->account->create($user_id);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            $this->view->showNewAccPage([
-                'message' => $message
+        if ($result->message == $this->user::USER_CREATION_SUCCESFUL) {
+            $this->view->showLoginPage([
+                'message' => $result->message
             ]);
         }
+
+        $this->view->showNewAccPage([
+            'message' => $result->message
+        ]);
     }
 
     public function login()
@@ -63,43 +70,33 @@ class UserController extends UserModel
             'senha' => filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING),
         ];
 
-        try {
-            if (!parent::userExists($data['cpf_cnpj'])) {
-                throw new \Exception('Usuário não cadastrado');
-            }
+        $teste = base64_encode(random_bytes(16));
 
-            $user = parent::getUserData($data['cpf_cnpj']);
+        $result = Helpers::getApiConnection('/login', $data);
 
-            if (!password_verify($data['senha'], $user->senha)) {
-                throw new \Exception('Senha incorreta');
-            }
-
-            $user->account = $this->account->getAccountData($user->id);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            $this->view->showLoginPage([
-                'message' => $message
-            ]);
-        }
-
-        if (!isset($message)) {
-            $_SESSION['user_id'] = $user->id;
-            $_SESSION['username'] = $user->nome_razao;
-            $_SESSION['account'] = $user->account->account;
+        if ($result->message == $this->user::USER_AUTHENTICATED) {
+            $_SESSION['user_id'] = $result->user_id;
+            $_SESSION['username'] = $result->username;
+            $_SESSION['account'] = $result->account;
+            $_SESSION['token'] = $result->token;
 
             Helpers::response()->redirect('/dashboard');
         }
+
+        $this->view->showLoginPage([
+            'message' => $result->message
+        ]);
     }
 
     public function getDashboardData()
     {
-        $account = $this->account->getAccountData($_SESSION['user_id']);
-        $transactions = $this->account->transactionHistory($_SESSION['account']);
+        $accountData = Helpers::getApiConnection('/accountData', ['user_id' => $_SESSION['user_id']]);
+        $transactions = Helpers::getApiConnection("/transactions", ['account' => $accountData->account]);
 
         $this->view->showDashboardPage([
-            'account' => $account->account,
-            'balance' => $account->saldo,
-            'transactions' => $transactions
+            'account' => $accountData->account,
+            'balance' => $accountData->saldo,
+            'transactions' => $transactions->transactions
         ]);
     }
 

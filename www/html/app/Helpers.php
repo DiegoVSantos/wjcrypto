@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace WJCrypto;
 
+use Exception;
 use Pecee\Http\Request;
 use Pecee\Http\Response;
 use Pecee\SimpleRouter\SimpleRouter as Router;
@@ -9,6 +11,8 @@ use WJCrypto\DI\Builder;
 
 class Helpers
 {
+    private const SERVER_CONTAINER = "wjcrypto-nginx";
+
     /**
      * Get url for a route by using either name/alias, class or method name.
      *
@@ -93,7 +97,7 @@ class Helpers
 
     public static function hasSession()
     {
-        if(isset($_SESSION['account'])) {
+        if(isset($_SESSION['user_id'])) {
             return true;
         } else {
             return false;
@@ -104,5 +108,87 @@ class Helpers
     public static function getContainer($instance)
     {
         return Builder::buildContainer()->get($instance);
+    }
+
+    public static function getApiConnection(string $endpoint, array $data, bool $returnTransfer = true)
+    {
+        $url =  'http://' . self::SERVER_CONTAINER . "/rest/API" . $endpoint;
+
+        try {
+            $curl_handler = curl_init($url);
+
+            // Check if initialization had gone wrong*
+            if ($curl_handler === false) {
+                throw new Exception('Failed to initialize');
+            }
+
+            $request_body = json_encode($data);
+
+            if(self::hasSession()) {
+                curl_setopt(
+                    $curl_handler,
+                    CURLOPT_HTTPHEADER,
+                    [
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $_SESSION['authentication_token']
+                    ]
+                );
+            } else {
+                curl_setopt($curl_handler, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            }
+
+            curl_setopt($curl_handler, CURLOPT_POST, true);
+            curl_setopt($curl_handler, CURLOPT_POSTFIELDS, $request_body);
+            curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
+
+            $result = curl_exec($curl_handler);
+
+            // Check the return value of curl_exec()
+            if ($result === false) {
+                throw new Exception(curl_error($curl_handler), curl_errno($curl_handler));
+            }
+
+            curl_close($curl_handler);
+
+            if($returnTransfer) {
+                $json = json_decode($result);
+                return $json;
+            }
+        } catch (Exception $e) {
+            trigger_error(sprintf(
+                "Curl failed with error #%d: %s",
+                $e->getCode(), $e->getMessage()),
+                E_USER_ERROR);
+        }
+    }
+
+    /**
+     * apiResponse
+     *
+     * Returns the base response array. Can also receive 2 optional parameters to set additional data
+     *
+     * @param   string  $message
+     * @param   array   $optParams
+     * @return  array
+     */
+    public static function apiResponse(string $message, array $optParams = [])
+    {
+        if(count($optParams)) {
+            $data = [
+                'statusCode' => http_response_code(),
+                'message' => $message
+            ];
+
+            foreach ($optParams as $key => $value) {
+                $data[$key] = $value;
+            }
+        } else {
+            $data = [
+                'statusCode' => http_response_code(),
+                'message' => $message
+            ];
+        }
+
+        self::response()->json($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 }

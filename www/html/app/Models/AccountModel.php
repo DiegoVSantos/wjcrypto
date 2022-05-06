@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WJCrypto\Models;
 
 use WJCrypto\Helpers;
 
 class AccountModel
 {
+    public const ACCOUNT_CREATION_FAILED = "Erro ao criar sua conta";
 
     /**
      * @var DbModel
@@ -35,6 +38,12 @@ class AccountModel
     protected function getAccountByAccNum($account)
     {
         return $this->conn->select('accounts', ["account = '$account'"])->fetchObject();
+    }
+
+    protected function getAccountBalance($account)
+    {
+        $account = $this->getAccountByAccNum($account);
+        return $account->saldo;
     }
 
     protected function deposit($account_num, $qty, $log = true)
