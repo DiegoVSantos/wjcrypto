@@ -76,7 +76,7 @@ class UserController
 
         if ($result->message == $this->user::USER_AUTHENTICATED) {
             $_SESSION['user_id'] = $result->user_id;
-            $_SESSION['username'] = $result->username;
+            $_SESSION['username'] = Helpers::decryptData($result->username);
             $_SESSION['account'] = $result->account;
             $_SESSION['token'] = $result->token;
 

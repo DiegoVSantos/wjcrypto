@@ -26,6 +26,8 @@ class UserApiController extends UserModel
     {
         $data = json_decode(file_get_contents('php://input'));
 
+        $data->cpf_cnpj = Helpers::encryptData($data->cpf_cnpj);
+
         try {
             if (!parent::userExists($data->cpf_cnpj)) {
                 throw new \Exception(parent::USER_NOT_FOUND);

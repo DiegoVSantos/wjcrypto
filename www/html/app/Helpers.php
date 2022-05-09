@@ -12,6 +12,9 @@ use WJCrypto\DI\Builder;
 class Helpers
 {
     private const SERVER_CONTAINER = "wjcrypto-nginx";
+    private const SECRET_KEY = "S3cr3t";
+    private const SECRET_IV = "134679";
+    private const METHOD = "AES-256-CBC";
 
     /**
      * Get url for a route by using either name/alias, class or method name.
@@ -95,6 +98,24 @@ class Helpers
         return null;
     }
 
+    public static function encryptData($string)
+    {
+        $output = false;
+        $key = hash('sha256', self::SECRET_KEY);
+        $iv = substr(hash('sha256', self::SECRET_IV), 0, 16);
+        $output = openssl_encrypt($string, self::METHOD, $key, 0, $iv);
+        $output = base64_encode($output);
+        return $output;
+    }
+
+    public static function decryptData($string)
+    {
+        $key = hash('sha256', self::SECRET_KEY);
+        $iv = substr(hash('sha256', self::SECRET_IV), 0, 16);
+        $output = openssl_decrypt(base64_decode($string), self::METHOD, $key, 0, $iv);
+        return $output;
+    }
+
     public static function hasSession()
     {
         if(isset($_SESSION['user_id'])) {
@@ -130,7 +151,7 @@ class Helpers
                     CURLOPT_HTTPHEADER,
                     [
                         'Content-Type: application/json',
-                        'Authorization: Bearer ' . $_SESSION['authentication_token']
+                        'Authorization: Bearer ' . $_SESSION['token']
                     ]
                 );
             } else {

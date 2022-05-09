@@ -28,6 +28,19 @@ class UserModel
 
     protected function createUser($data)
     {
+        $data->nome_razao = Helpers::encryptData($data->nome_razao);
+        $data->cpf_cnpj = Helpers::encryptData($data->cpf_cnpj);
+        $data->rg_inscricao = Helpers::encryptData($data->rg_inscricao);
+        $data->dataNascimento_fundacao = Helpers::encryptData($data->dataNascimento_fundacao);
+        $data->telefone = Helpers::encryptData($data->telefone);
+        $data->cep = Helpers::encryptData($data->cep);
+        $data->rua = Helpers::encryptData($data->rua);
+        $data->bairro = Helpers::encryptData($data->bairro);
+        $data->numero = Helpers::encryptData($data->numero);
+        $data->complemento = Helpers::encryptData($data->complemento);
+        $data->cidade = Helpers::encryptData($data->cidade);
+        $data->uf = Helpers::encryptData($data->uf);
+
         if ($this->userExists($data->cpf_cnpj)) {
             throw new \Exception(self::USER_ALREADY_EXISTS);
         }
