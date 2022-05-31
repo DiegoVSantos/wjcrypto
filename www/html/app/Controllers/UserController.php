@@ -70,8 +70,6 @@ class UserController
             'senha' => filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING),
         ];
 
-        $teste = base64_encode(random_bytes(16));
-
         $result = Helpers::getApiConnection('/login', $data);
 
         if ($result->message == $this->user::USER_AUTHENTICATED) {
